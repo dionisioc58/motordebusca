@@ -1,10 +1,13 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+import java.util.regex.Pattern;
 
 public class Importar {
 	
-	private static String[] caracteresInvalidos = {";", ",", ".", "/", "<", ">", ":", "]", "[", "{", "}", "'", "`"} ;
+	private static String[] caracteresInvalidos = {";", ",", ".", "/", "<", ">", ":", "]", "[", "{", "}", "'", "`", "+", "*"} ;
 	
 	public static boolean importar(Trie trie, Arquivo arquivo) {
 		BufferedReader buffer = null;
@@ -31,9 +34,13 @@ public class Importar {
 	}
 	
 	private static String limpar(String texto) {
-		String retorno = texto;
-		for(int i = 0; i < caracteresInvalidos.length; i++)
-			retorno = retorno.replace(caracteresInvalidos[i], " ");
-		return retorno;
+		texto = Normalizer.normalize(texto, Form.NFD).replaceAll("[^\\p{Alpha}]", " ");
+		//String alphaOnly = input.replaceAll("[^\\p{Alpha}]+","");
+		//Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+		return texto;//pattern.matcher(texto).replaceAll("");
+		//String retorno = texto;
+		//for(int i = 0; i < caracteresInvalidos.length; i++)
+			//texto = texto.replace(caracteresInvalidos[i], " ");
+		//return texto;
 	}
 }
