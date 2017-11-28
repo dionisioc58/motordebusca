@@ -1,4 +1,8 @@
-
+/**
+ * 
+ * @author dionisio
+ *
+ */
 public class Value {
 	private Arquivo arquivo;
 	
