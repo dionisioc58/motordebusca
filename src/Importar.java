@@ -6,7 +6,8 @@ import java.text.Normalizer.Form;
 
 public class Importar {
 	
-	private static String[] caracteresInvalidos = {";", ",", ".", "/", "<", ">", ":", "]", "[", "{", "}", "'", "`", "+", "*"} ;
+	private static String[] caracteresInvalidos = {";", ",", ".", "/", "<", ">", ":", "]", "[", "{", "}",
+												   "'", "`", "+", "*", "\"", "(", ")"} ;
 	
 	public static boolean importar(Trie trie, Arquivo arquivo) {
 		BufferedReader buffer = null;

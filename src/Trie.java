@@ -40,6 +40,7 @@ public class Trie {
 		}
 		atual.setFim(true);
 		atual.addValue(value);
+		atual.setPalavra(s);
 	}
 
 	/**
@@ -92,9 +93,9 @@ public class Trie {
 	
 	@Override
 	public String toString() {
-		String retorno = "Raiz\n";
+		String retorno = "[Raiz]\n";
 		for (TrieNode filho : raiz.getFilhos()) {
-			retorno += filho.toString(1);
+			retorno += filho.toString();
 		}
 		return retorno;
 	}

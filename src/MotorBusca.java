@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -68,9 +70,13 @@ public class MotorBusca {
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
+		JRadioButton rdbtnNormal = new JRadioButton("NORMAL");
+		rdbtnNormal.setBounds(77, 158, 63, 23);
+		rdbtnNormal.setSelected(true);
+		frame.getContentPane().add(rdbtnNormal);
+		
 		JRadioButton rdbtnAnd = new JRadioButton("AND");
 		rdbtnAnd.setBounds(142, 158, 63, 23);
-		rdbtnAnd.setSelected(true);
 		frame.getContentPane().add(rdbtnAnd);
 		
 		JRadioButton rdbtnOr = new JRadioButton("OR");
@@ -285,21 +291,41 @@ public class MotorBusca {
 				JButton btnAtualizar = new JButton("Atualizar");
 				btnAtualizar.setBounds(276, 109, 89, 23);
 				frameIndexacao.getContentPane().add(btnAtualizar);
-				JButton btnImprimir = new JButton("Imprimir Árvore");
+				JButton btnImprimir = new JButton("Índice");
 				btnImprimir.setBounds(276, 143, 89, 23);
 				frameIndexacao.getContentPane().add(btnImprimir);
 				btnImprimir.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						JPanel painel = new JPanel();
-						painel.setBorder(new TitledBorder(new EtchedBorder(), "Árvore completa"));
-					    JTextArea area = new JTextArea(16, 58);
+						painel.setBorder(new TitledBorder(new EtchedBorder(), "Índice Remissivo"));
+						
+						JTextArea area = new JTextArea(16, 58);
 					    area.setEditable(false);
 					    area.setText(t.toString());
+					    
 					    JScrollPane scroll = new JScrollPane(area);
 					    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 					    area.setFont(new Font("Courier New", Font.PLAIN, 16));
+						
+						JButton button = new JButton();
+						button.setBounds(0, 0, 30, 30);
+						try {
+							button.setIcon(new ImageIcon(ImageIO.read(getClass().getResource("resources/refresh.png"))
+									.getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH)));
+						} catch (Exception ex) {
+							System.out.println(ex);
+						}
+						button.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								area.setText(t.toString());
+							}
+						});
+					    
+						painel.add(button);
 					    painel.add(scroll);
+					    
 					    JFrame frame = new JFrame();
 					    frame.add(painel);
 					    frame.pack();

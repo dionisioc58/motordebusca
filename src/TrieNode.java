@@ -21,6 +21,8 @@ public class TrieNode {
 	private LinkedList<TrieNode> filhos;
 	
 	private List<Value> values;
+	
+	private String palavra;
 
 	/**
 	 * Instantiates a new trie node.
@@ -49,26 +51,14 @@ public class TrieNode {
 		return null;
 	}
 	
-	/**
-	 * TrieNode to String
-	 * @param nivel A profundidade
-	 */
-	public String toString(int nivel) {
+	@Override
+	public String toString() {
 		String retorno = "";
-		//Imprime | para identificar a posicao
-		for(int i = 0; i < nivel; i++)
-			retorno += "|";
-			
-		//Imprime um asterisco para indicar o fim de uma sequencia 
-		retorno += valor;
-		if(isFim)
-			retorno += "*";
-		retorno += "\n";
-		
-		//Imprime os filhos recursivamente
 		for(TrieNode filho : filhos) {
-			retorno += filho.toString(nivel+1);
+			retorno += filho.toString();
 		}
+		if(isFim)
+			retorno += palavra + "\n";
 		return retorno;
 	}
 	
@@ -148,5 +138,13 @@ public class TrieNode {
 	
 	public boolean isFim() {
 		return isFim;
+	}
+
+	public String getPalavra() {
+		return palavra;
+	}
+
+	public void setPalavra(String palavra) {
+		this.palavra = palavra;
 	}
 }
