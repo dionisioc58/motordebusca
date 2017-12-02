@@ -32,4 +32,9 @@ public class Value {
 	public void incrementaQtde() {
 		this.qtde += 1;
 	}
+	
+	@Override
+	public String toString() {
+		return arquivo.getNome() + ":" + linha + ":" + qtde;
+	}
 }

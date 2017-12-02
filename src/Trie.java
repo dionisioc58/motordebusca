@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -96,6 +97,14 @@ public class Trie {
 		String retorno = "[Raiz]\n";
 		for (TrieNode filho : raiz.getFilhos()) {
 			retorno += filho.toString();
+		}
+		return retorno;
+	}
+	
+	public HashMap<String, Value> getIndice() {
+		HashMap<String, Value> retorno = new HashMap<>();
+		for (TrieNode filho : raiz.getFilhos()) {
+			retorno.putAll(filho.getIndice());
 		}
 		return retorno;
 	}

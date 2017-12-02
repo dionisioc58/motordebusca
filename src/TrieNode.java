@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,18 @@ public class TrieNode {
 			for(Value value : values)
 				retorno += "  " + value.getArquivo().getNome() + ":" + value.getLinha() + ":" + value.getQtde();
 			retorno += "\n";
+		}
+		return retorno;
+	}
+	
+	public HashMap<String, Value> getIndice() {
+		HashMap<String, Value> retorno = new HashMap<>();
+		if(this.isFim) {
+			for(Value value : values)
+				retorno.put(palavra, value);
+		}
+		for (TrieNode filho : this.getFilhos()) {
+			retorno.putAll(filho.getIndice());
 		}
 		return retorno;
 	}

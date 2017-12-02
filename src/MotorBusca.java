@@ -296,7 +296,13 @@ public class MotorBusca {
 				btnAtualizar.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						
+						indice.clear();
+						indice = new HashMap<>();
+						indice.putAll(t.getIndice());
+						for (String palavra: indice.keySet()){
+				            System.out.println(palavra);
+				            System.out.println("  " + indice.get(palavra));
+						}
 					}
 				});
 				frameIndexacao.getContentPane().add(btnAtualizar);
