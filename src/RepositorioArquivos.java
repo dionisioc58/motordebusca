@@ -1,4 +1,5 @@
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class RepositorioArquivos {
 	private HashSet<Arquivo> arquivos;
@@ -20,8 +21,13 @@ public class RepositorioArquivos {
 		return !contem;
 	}
 	
-	public void delArquivo(Arquivo arquivo) {
-		arquivos.remove(arquivo);
+	public void delArquivo(String nomeArquivo) {
+		Iterator<Arquivo> i = arquivos.iterator();
+		while (i.hasNext()) {
+			Arquivo arquivo = i.next();
+			if(arquivo.getNome().equals(nomeArquivo))
+				i.remove();
+		}
 	}
 	
 	public HashSet<Arquivo> listaArquivos() {
@@ -30,6 +36,6 @@ public class RepositorioArquivos {
 	
 	public void printArquivos() {
 		for(Arquivo arquivo : arquivos)
-			System.out.println(arquivo.getNome() + " - " + arquivo.getDataImportacao());
+			System.out.println(arquivo.getNome());
 	}
 }

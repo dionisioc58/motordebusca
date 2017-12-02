@@ -1,3 +1,4 @@
+import java.util.Iterator;
 
 /**
  * The Class Trie.
@@ -89,14 +90,28 @@ public class Trie {
 		atual.setFim(false);
 	}
 	
-	/**
-	 * Print the trie
-	 */
-	public void print() {
-		System.out.println("Raiz");
+	@Override
+	public String toString() {
+		String retorno = "Raiz\n";
 		for (TrieNode filho : raiz.getFilhos()) {
-			filho.print(1);
+			retorno += filho.toString(1);
 		}
-		System.out.println("");
+		return retorno;
+	}
+
+	/**
+	 * Remove um livro da árvore
+	 * @param nomeArquivo Nome do arquivo
+	 * @return True se conseguiu remover
+	 */
+	public boolean removeBook(String nomeArquivo) {
+		Iterator<TrieNode> i = raiz.getFilhos().iterator();
+		while (i.hasNext()) {
+			TrieNode filho = i.next();
+			filho.removeBook(nomeArquivo);
+			if((filho.getValues().size() == 0) && (filho.getFilhos().size() == 0))
+				i.remove();
+		}
+		return true;
 	}
 }

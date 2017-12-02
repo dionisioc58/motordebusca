@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -49,25 +50,26 @@ public class TrieNode {
 	}
 	
 	/**
-	 * Print the trie
+	 * TrieNode to String
 	 * @param nivel A profundidade
 	 */
-	public void print(int nivel) {
+	public String toString(int nivel) {
+		String retorno = "";
 		//Imprime | para identificar a posicao
 		for(int i = 0; i < nivel; i++)
-			System.out.print("|");
+			retorno += "|";
 			
 		//Imprime um asterisco para indicar o fim de uma sequencia 
-		System.out.print(valor);
+		retorno += valor;
 		if(isFim)
-			System.out.println("*");
-		else
-			System.out.println("");
+			retorno += "*";
+		retorno += "\n";
 		
 		//Imprime os filhos recursivamente
 		for(TrieNode filho : filhos) {
-			filho.print(nivel+1);
+			retorno += filho.toString(nivel+1);
 		}
+		return retorno;
 	}
 	
 	public void printOrigens() {
@@ -75,9 +77,37 @@ public class TrieNode {
 			System.out.println(lista.getArquivo().getNome() + ": " + lista.getQtde() + " ocorrência(s) na linha " + lista.getLinha());
 		}
 	}
+	
+	public void removeBook(String nomeArquivo) {
+		Iterator<TrieNode> i = this.getFilhos().iterator();
+		while (i.hasNext()) {
+			TrieNode filho = i.next();
+			filho.removeBook(nomeArquivo);
+			if((filho.getValues().size() == 0) && (filho.getFilhos().size() == 0)) {
+				i.remove();
+			}
+		}
+		if(this.isFim()) {
+			Iterator<Value> ii = this.getValues().iterator();
+			while (ii.hasNext()) {
+				Value value = ii.next();
+				if(value.getArquivo().getNome().equals(nomeArquivo)) {
+					ii.remove();
+				}
+			}
+			if(this.getValues().size() == 0) {
+				this.setFim(false);
+			}
+		}
+	}
 
 	public List<Value> getValues() {
 		return values;
+	}
+	
+	public Value getValue(int index)
+	{
+		return values.get(index);
 	}
 
 	public void addValue(Value value) {
