@@ -57,8 +57,12 @@ public class TrieNode {
 		for(TrieNode filho : filhos) {
 			retorno += filho.toString();
 		}
-		if(isFim)
+		if(isFim) {
 			retorno += palavra + "\n";
+			for(Value value : values)
+				retorno += "  " + value.getArquivo().getNome() + ":" + value.getLinha() + ":" + value.getQtde();
+			retorno += "\n";
+		}
 		return retorno;
 	}
 	

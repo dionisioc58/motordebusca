@@ -5,6 +5,7 @@ import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -27,6 +28,7 @@ public class MotorBusca {
 	private JTextField textField;
 	Trie t = new Trie();
 	RepositorioArquivos repositorio = new RepositorioArquivos();
+	private HashMap<String, Value> indice;
 
 	/**
 	 * Launch the application.
@@ -55,6 +57,7 @@ public class MotorBusca {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		indice = new HashMap<String, Value>();
 		frame = new JFrame();
 		frame.setBounds(150, 100, 450, 362);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -290,7 +293,14 @@ public class MotorBusca {
 				
 				JButton btnAtualizar = new JButton("Atualizar");
 				btnAtualizar.setBounds(276, 109, 89, 23);
+				btnAtualizar.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
 				frameIndexacao.getContentPane().add(btnAtualizar);
+				
 				JButton btnImprimir = new JButton("Índice");
 				btnImprimir.setBounds(276, 143, 89, 23);
 				frameIndexacao.getContentPane().add(btnImprimir);
