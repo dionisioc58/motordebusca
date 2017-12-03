@@ -9,7 +9,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -36,7 +37,7 @@ public class MotorBusca {
 	private JTextField textField;
 	Trie t;
 	RepositorioArquivos repositorio;
-	private HashMap<String, Value> indice;
+	private TreeMap<String, Value> indice;
 	private Trie blackList;
 
 	/**
@@ -69,8 +70,7 @@ public class MotorBusca {
 		t = new Trie();
 		blackList = new Trie();
 		repositorio = new RepositorioArquivos();
-		indice = new HashMap<String, Value>();
-		
+		indice = new TreeMap<String, Value>();
 		recarrega();
 		
 		frame = new JFrame();
@@ -365,7 +365,14 @@ public class MotorBusca {
 						
 						JTextArea area = new JTextArea(16, 58);
 					    area.setEditable(false);
-					    area.setText(t.toString());
+					    String palavra = "";
+					    for (Map.Entry<String, Value> entry : indice.entrySet()) {
+							if(!palavra.equals(entry.getKey())) {
+								palavra = entry.getKey();
+								area.append(palavra + "\n");
+							}
+							area.append("  " + entry.getValue() + "\n");
+					    }
 					    
 					    JScrollPane scroll = new JScrollPane(area);
 					    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -463,6 +470,7 @@ public class MotorBusca {
 		   blackList = (Trie) objeto.readObject();
 		   repositorio = (RepositorioArquivos) objeto.readObject();
 		   indice = t.getIndice();
+		   System.out.println(indice.comparator());
 		   objeto.close();
 		   arquivo.close();
 		   System.out.println("Dados recuperados com sucesso!");

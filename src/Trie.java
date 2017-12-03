@@ -1,6 +1,6 @@
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 /**
  * The Class Trie.
@@ -104,8 +104,8 @@ public class Trie implements Serializable{
 		return retorno;
 	}
 	
-	public HashMap<String, Value> getIndice() {
-		HashMap<String, Value> retorno = new HashMap<>();
+	public TreeMap<String, Value> getIndice() {
+		TreeMap<String, Value> retorno = new TreeMap<>();
 		for (TrieNode filho : raiz.getFilhos()) {
 			retorno.putAll(filho.getIndice());
 		}
