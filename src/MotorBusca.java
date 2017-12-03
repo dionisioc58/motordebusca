@@ -4,8 +4,13 @@ import java.awt.Font;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -24,11 +29,12 @@ import javax.swing.border.TitledBorder;
 
 public class MotorBusca {
 
-	private JFrame frame,frameIndexacao, frameBusca;
+	private JFrame frame, frameIndexacao, frameBusca;
 	private JTextField textField;
-	Trie t = new Trie();
-	RepositorioArquivos repositorio = new RepositorioArquivos();
+	Trie t;
+	RepositorioArquivos repositorio;
 	private HashMap<String, Value> indice;
+	private Trie blackList;
 
 	/**
 	 * Launch the application.
@@ -57,7 +63,13 @@ public class MotorBusca {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		t = new Trie();
+		blackList = new Trie();
+		repositorio = new RepositorioArquivos();
 		indice = new HashMap<String, Value>();
+		
+		recarrega();
+		
 		frame = new JFrame();
 		frame.setBounds(150, 100, 450, 362);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,31 +85,24 @@ public class MotorBusca {
 		frame.getContentPane().add(textField);
 		textField.setColumns(10);
 		
-		JRadioButton rdbtnNormal = new JRadioButton("NORMAL");
-		rdbtnNormal.setBounds(77, 158, 63, 23);
-		rdbtnNormal.setSelected(true);
-		frame.getContentPane().add(rdbtnNormal);
-		
 		JRadioButton rdbtnAnd = new JRadioButton("AND");
-		rdbtnAnd.setBounds(142, 158, 63, 23);
+		rdbtnAnd.setBounds(172, 158, 63, 23);
 		frame.getContentPane().add(rdbtnAnd);
 		
 		JRadioButton rdbtnOr = new JRadioButton("OR");
-		rdbtnOr.setBounds(207, 158, 63, 23);
+		rdbtnOr.setBounds(237, 158, 63, 23);
 		frame.getContentPane().add(rdbtnOr);
 		
 		JButton btnBusca = new JButton("Busca");
-		btnBusca.setEnabled(true);
+		btnBusca.setEnabled(false);
 		btnBusca.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(textField.getText().isEmpty() == false)
-				{
+				{	
 					frameBusca = new JFrame();
 					frameBusca.setBounds(150, 200, 450, 362);
 					frameBusca.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 					frameBusca.getContentPane().setLayout(null);
-					
-					frameBusca.setVisible(true);
 					
 					List listBusca = new List();
 					listBusca.setBounds(0, 0, 434, 323);
@@ -110,6 +115,15 @@ public class MotorBusca {
 					
 					palavrasDigitadas = busca.split(" ");
 					
+					for(int i = 0; i < palavrasDigitadas.length; i++) {
+						if(blackList.search(palavrasDigitadas[i], false) != null) {
+							JOptionPane.showMessageDialog(btnBusca, "Pesquisa proibida.", "ATENÇÃO", 0);
+							frameBusca.setVisible(false);
+							return;
+						}
+					}
+					
+					frameBusca.setVisible(true);
 					
 					if(rdbtnAnd.isSelected())
 					{		
@@ -249,17 +263,37 @@ public class MotorBusca {
 		lblMOT.setBounds(106, 41, 236, 29);
 		frame.getContentPane().add(lblMOT);
 		
+		Button btnBlack = new Button("Black List");
+		btnBlack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				IOArquivos selecionar = new IOArquivos();
+				Arquivo novo = selecionar.addArquivo();
+				if(novo != null) {
+					blackList = new Trie();
+					Importar.importar(blackList, novo);
+					salvar(t, blackList, repositorio);
+				}
+			}
+		});
+		btnBlack.setBounds(90, 10, 70, 22);
+		frame.getContentPane().add(btnBlack);
+		
 		Button button = new Button("Indexação");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameIndexacao.setVisible(true);
 				
 				List listArquivos = new List();
+				HashSet<Arquivo> arquivos = repositorio.listaArquivos();
+				for(Arquivo arquivo : arquivos) {
+					listArquivos.add(arquivo.getNome());
+				}
+
 				listArquivos.setBounds(37, 41, 233, 272);
 				frameIndexacao.getContentPane().add(listArquivos);
 				
 				JButton btnAdicionar = new JButton("Adicionar");
-				btnAdicionar.setBounds(276, 41, 89, 23);
+				btnAdicionar.setBounds(276, 41, 129, 23);
 				frameIndexacao.getContentPane().add(btnAdicionar);
 				btnAdicionar.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {						
@@ -270,13 +304,14 @@ public class MotorBusca {
 							{
 								Importar.importar(t, novo);
 								listArquivos.add(novo.getNome());
+								salvar(t, blackList, repositorio);
 							}
 						}
 					}
 				});
 				
 				JButton btnRemover = new JButton("Remover");
-				btnRemover.setBounds(276, 75, 89, 23);
+				btnRemover.setBounds(276, 75, 129, 23);
 				frameIndexacao.getContentPane().add(btnRemover);
 				btnRemover.addActionListener(new ActionListener() {
 					@Override
@@ -285,6 +320,7 @@ public class MotorBusca {
 							if(t.removeBook(listArquivos.getSelectedItem())) {
 								repositorio.delArquivo(listArquivos.getSelectedItem());
 								listArquivos.remove(listArquivos.getSelectedIndex());
+								salvar(t, blackList, repositorio);
 							}
 						} else
 							JOptionPane.showMessageDialog(btnRemover, "Selecione um arquivo para remover.", "ATENÇÃO", 0);
@@ -292,7 +328,7 @@ public class MotorBusca {
 				});
 				
 				JButton btnAtualizar = new JButton("Atualizar");
-				btnAtualizar.setBounds(276, 109, 89, 23);
+				btnAtualizar.setBounds(276, 109, 129, 23);
 				btnAtualizar.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -308,7 +344,7 @@ public class MotorBusca {
 				frameIndexacao.getContentPane().add(btnAtualizar);
 				
 				JButton btnImprimir = new JButton("Índice");
-				btnImprimir.setBounds(276, 143, 89, 23);
+				btnImprimir.setBounds(276, 143, 129, 23);
 				frameIndexacao.getContentPane().add(btnImprimir);
 				btnImprimir.addActionListener(new ActionListener() {
 					@Override
@@ -322,7 +358,6 @@ public class MotorBusca {
 					    
 					    JScrollPane scroll = new JScrollPane(area);
 					    scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-					    area.setFont(new Font("Courier New", Font.PLAIN, 16));
 						
 						JButton button = new JButton();
 						button.setBounds(0, 0, 30, 30);
@@ -358,8 +393,9 @@ public class MotorBusca {
 		{
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(rdbtnOr.isSelected())
+				if(rdbtnOr.isSelected() )
 					rdbtnOr.setSelected(false);
+				
 				else
 					rdbtnAnd.setSelected(true);
 				
@@ -375,6 +411,7 @@ public class MotorBusca {
 			public void actionPerformed(ActionEvent e) {
 				if(rdbtnAnd.isSelected())
 					rdbtnAnd.setSelected(false);
+				
 				else
 					rdbtnOr.setSelected(true);
 				
@@ -382,5 +419,45 @@ public class MotorBusca {
 			}
 			
 		});
+		
 	}
+	
+	/**
+    * Salvar
+    */
+	public void salvar(Trie arvore, Trie blackList, RepositorioArquivos repositorio) {
+		try {
+			FileOutputStream arquivo = new FileOutputStream("salva.dat");
+	   		ObjectOutputStream objeto = new ObjectOutputStream(arquivo);
+	   		objeto.writeObject(arvore);
+	   		objeto.writeObject(blackList);
+	   		objeto.writeObject(repositorio);
+	   		objeto.flush();
+	   		objeto.close();
+	   		System.out.println("Dados salvos com sucesso!");
+		} catch(Exception e){
+			System.out.println("Problemas ao salvar os dados!");
+			e.printStackTrace(System.out);
+		}
+   }
+   
+   /**
+    * Recarregar
+    */
+   public void recarrega() {
+	   try {
+		   FileInputStream arquivo = new FileInputStream("salva.dat");
+		   ObjectInputStream objeto = new ObjectInputStream(arquivo);
+		   t = (Trie) objeto.readObject();
+		   blackList = (Trie) objeto.readObject();
+		   repositorio = (RepositorioArquivos) objeto.readObject();
+		   indice = t.getIndice();
+		   objeto.close();
+		   arquivo.close();
+		   System.out.println("Dados recuperados com sucesso!");
+		} catch(Exception e) {
+			System.out.println("Problemas ao recarregar os dados!");
+		}
+	   return;
+   }
 }

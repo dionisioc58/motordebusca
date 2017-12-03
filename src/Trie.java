@@ -1,10 +1,13 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
 /**
  * The Class Trie.
  */
-public class Trie {
+public class Trie implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
 	
 	/** The raiz. */
 	private TrieNode raiz;

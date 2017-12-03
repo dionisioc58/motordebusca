@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,8 +8,10 @@ import java.util.List;
 /**
  * The Class TrieNode.
  */
-public class TrieNode {
+public class TrieNode implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
 	/** The valor. */
 	private char valor;
 	

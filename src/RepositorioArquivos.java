@@ -1,7 +1,11 @@
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class RepositorioArquivos {
+public class RepositorioArquivos implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
 	private HashSet<Arquivo> arquivos;
 	
 	public RepositorioArquivos() {

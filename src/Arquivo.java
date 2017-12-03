@@ -1,6 +1,9 @@
+import java.io.Serializable;
 
-public class Arquivo {
+public class Arquivo implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String caminho;
 	private String nome;
 	
