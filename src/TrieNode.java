@@ -1,15 +1,15 @@
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
+import java.util.TreeMap;
 /**
  * The Class TrieNode.
  */
 public class TrieNode implements Serializable{
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The valor. */
@@ -24,8 +24,10 @@ public class TrieNode implements Serializable{
 	/** The filhos. */
 	private LinkedList<TrieNode> filhos;
 	
+	/** The values. */
 	private List<Value> values;
 	
+	/** The palavra. */
 	private String palavra;
 
 	/**
@@ -55,6 +57,9 @@ public class TrieNode implements Serializable{
 		return null;
 	}
 	
+	/**
+	 * Converte o objeto em string
+	 */
 	@Override
 	public String toString() {
 		String retorno = "";
@@ -70,8 +75,13 @@ public class TrieNode implements Serializable{
 		return retorno;
 	}
 	
-	public HashMap<String, Value> getIndice() {
-		HashMap<String, Value> retorno = new HashMap<>();
+	/**
+	 * Gets the indice.
+	 *
+	 * @return the indice
+	 */
+	public TreeMap<String, Value> getIndice() {
+		TreeMap<String, Value> retorno = new TreeMap<>();
 		if(this.isFim) {
 			for(Value value : values)
 				retorno.put(palavra, value);
@@ -82,12 +92,20 @@ public class TrieNode implements Serializable{
 		return retorno;
 	}
 	
+	/**
+	 * Prints the origens.
+	 */
 	public void printOrigens() {
 		for(Value lista : this.values) {
 			System.out.println(lista.getArquivo().getNome() + ": " + lista.getQtde() + " ocorrência(s) na linha " + lista.getLinha());
 		}
 	}
 	
+	/**
+	 * Removes the book.
+	 *
+	 * @param nomeArquivo the nome arquivo
+	 */
 	public void removeBook(String nomeArquivo) {
 		Iterator<TrieNode> i = this.getFilhos().iterator();
 		while (i.hasNext()) {
@@ -112,15 +130,31 @@ public class TrieNode implements Serializable{
 		}
 	}
 
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
 	public List<Value> getValues() {
 		return values;
 	}
 	
+	/**
+	 * Gets the value.
+	 *
+	 * @param index the index
+	 * @return the value
+	 */
 	public Value getValue(int index)
 	{
 		return values.get(index);
 	}
 
+	/**
+	 * Adds the value.
+	 *
+	 * @param value the value
+	 */
 	public void addValue(Value value) {
 		boolean encontrado = false;
 		for(Value lista : this.values) {
@@ -133,38 +167,83 @@ public class TrieNode implements Serializable{
 			this.values.add(value);
 	}
 	
+	/**
+	 * Gets the contador.
+	 *
+	 * @return the contador
+	 */
 	public int getContador() {
 		return contador;
 	}
 
+	/**
+	 * Sets the contador.
+	 *
+	 * @param contador the new contador
+	 */
 	public void setContador(int contador) {
 		this.contador = contador;
 	}
 
+	/**
+	 * Gets the filhos.
+	 *
+	 * @return the filhos
+	 */
 	public LinkedList<TrieNode> getFilhos() {
 		return filhos;
 	}
 	
+	/**
+	 * Adds the filho.
+	 *
+	 * @param node the node
+	 */
 	public void addFilho(TrieNode node) {
 		filhos.add(node);
 	}
 	
+	/**
+	 * Del filho.
+	 *
+	 * @param node the node
+	 */
 	public void delFilho(TrieNode node) {
 		filhos.remove(node);
 	}
 
+	/**
+	 * Sets the fim.
+	 *
+	 * @param isFim the new fim
+	 */
 	public void setFim(boolean isFim) {
 		this.isFim = isFim;
 	}
 	
+	/**
+	 * Checks if is fim.
+	 *
+	 * @return true, if is fim
+	 */
 	public boolean isFim() {
 		return isFim;
 	}
 
+	/**
+	 * Gets the palavra.
+	 *
+	 * @return the palavra
+	 */
 	public String getPalavra() {
 		return palavra;
 	}
 
+	/**
+	 * Sets the palavra.
+	 *
+	 * @param palavra the new palavra
+	 */
 	public void setPalavra(String palavra) {
 		this.palavra = palavra;
 	}

@@ -1,12 +1,12 @@
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.TreeMap;
-
 /**
  * The Class Trie.
  */
 public class Trie implements Serializable{
 	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
 	/** The raiz. */
@@ -23,6 +23,8 @@ public class Trie implements Serializable{
 	 * Insert word.
 	 *
 	 * @param s the string
+	 * @param arquivo the arquivo
+	 * @param linha the linha
 	 */
 	public void insertWord(String s, Arquivo arquivo, int linha) {
 		TrieNode retorno = search(s, false);
@@ -51,6 +53,7 @@ public class Trie implements Serializable{
 	 * Search.
 	 *
 	 * @param s the string
+	 * @param imprimir the imprimir
 	 * @return true, if successful
 	 */
 	public TrieNode search(String s, boolean imprimir) {
@@ -95,6 +98,9 @@ public class Trie implements Serializable{
 		atual.setFim(false);
 	}
 	
+	/**
+	 * Converte o objeto em string
+	 */
 	@Override
 	public String toString() {
 		String retorno = "[Raiz]\n";
@@ -104,6 +110,12 @@ public class Trie implements Serializable{
 		return retorno;
 	}
 	
+	/**
+	 * Gets the indice.
+	 *
+	 * @return Um treemap de string e value com todas palavras
+	 * 			formando um índice
+	 */
 	public TreeMap<String, Value> getIndice() {
 		TreeMap<String, Value> retorno = new TreeMap<>();
 		for (TrieNode filho : raiz.getFilhos()) {
@@ -113,7 +125,8 @@ public class Trie implements Serializable{
 	}
 
 	/**
-	 * Remove um livro da árvore
+	 * Remove um livro da árvore.
+	 *
 	 * @param nomeArquivo Nome do arquivo
 	 * @return True se conseguiu remover
 	 */

@@ -27,21 +27,33 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 /**
- * Classe principal do Motor de Busca
+ * Classe principal do Motor de Busca.
  */
 public class MotorBusca {
 
+	/** The frame busca. */
 	private JFrame frame, frameIndexacao, frameBusca;
+	
+	/** The text field. */
 	private JTextField textField;
+	
+	/** The t. */
 	Trie t;
+	
+	/** The repositorio. */
 	RepositorioArquivos repositorio;
+	
+	/** The indice. */
 	private TreeMap<String, Value> indice;
+	
+	/** The black list. */
 	private Trie blackList;
 
 	/**
 	 * Launch the application.
+	 *
+	 * @param args the arguments
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -441,8 +453,12 @@ public class MotorBusca {
 	}
 	
 	/**
-    * Salvar
-    */
+	 * Salvar em arquivo.
+	 *
+	 * @param arvore the arvore
+	 * @param blackList the black list
+	 * @param repositorio the repositorio
+	 */
 	public void salvar(Trie arvore, Trie blackList, RepositorioArquivos repositorio) {
 		try {
 			FileOutputStream arquivo = new FileOutputStream("salva.dat");
@@ -460,7 +476,7 @@ public class MotorBusca {
    }
    
    /**
-    * Recarregar
+    * Recarregar de arquivo salvo.
     */
    public void recarrega() {
 	   try {
@@ -480,6 +496,11 @@ public class MotorBusca {
 	   return;
    }
    
+   /**
+    * Atualiza lista de arquivos da base.
+    *
+    * @param lista the lista
+    */
    public void atualizaLista(List lista) {
 	   ArrayList<String> ordenados = new ArrayList<String>();
 		for(Arquivo arquivo : repositorio.listaArquivos()) {
