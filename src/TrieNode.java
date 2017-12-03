@@ -101,7 +101,8 @@ public class TrieNode implements Serializable{
 			Iterator<Value> ii = this.getValues().iterator();
 			while (ii.hasNext()) {
 				Value value = ii.next();
-				if(value.getArquivo().getNome().equals(nomeArquivo)) {
+				String nome = value.getArquivo().getNome() + " - " + value.getArquivo().getQtdePalavras();
+				if(nome.equals(nomeArquivo)) {
 					ii.remove();
 				}
 			}

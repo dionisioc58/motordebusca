@@ -16,16 +16,20 @@ public class Importar {
 		try {
 			buffer = new BufferedReader(new FileReader(arquivo.getCaminho()));
 			int linha = 1;
+			int qtdePalavras = 0;
             while ((textoLinha = buffer.readLine()) != null) {
                 textoLinha = limpar(textoLinha);
                 String[] arr = textoLinha.split(" ");
                 for(String ss : arr) {
-                	if(!ss.trim().equals(""))
-                      trie.insertWord(ss, arquivo, linha);
+                	if(!ss.trim().equals("")) {
+                		trie.insertWord(ss, arquivo, linha);
+                		qtdePalavras++;
+                	}
                  }
                 linha++;
             }
             buffer.close();
+            arquivo.setQtdePalavras(qtdePalavras);
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 			return false;

@@ -6,10 +6,12 @@ public class Arquivo implements Serializable {
 	
 	private String caminho;
 	private String nome;
+	private int qtdePalavras;
 	
 	public Arquivo(String caminho, String nome) {
 		this.caminho = caminho;
 		this.nome = nome;
+		this.qtdePalavras = 0;
 	}
 
 	public String getCaminho() {
@@ -20,8 +22,15 @@ public class Arquivo implements Serializable {
 		return nome;
 	}
 
-	public String toString()
-	{
+	public String toString() {
 		return (nome);
+	}
+
+	public int getQtdePalavras() {
+		return qtdePalavras;
+	}
+
+	public void setQtdePalavras(int qtdePalavras) {
+		this.qtdePalavras = qtdePalavras;
 	}
 }

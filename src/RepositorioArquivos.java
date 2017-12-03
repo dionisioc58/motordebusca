@@ -29,7 +29,8 @@ public class RepositorioArquivos implements Serializable {
 		Iterator<Arquivo> i = arquivos.iterator();
 		while (i.hasNext()) {
 			Arquivo arquivo = i.next();
-			if(arquivo.getNome().equals(nomeArquivo))
+			String nome = arquivo.getNome() + " - " + arquivo.getQtdePalavras();
+			if(nome.equals(nomeArquivo))
 				i.remove();
 		}
 	}

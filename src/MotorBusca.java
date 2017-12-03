@@ -10,11 +10,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,6 +27,9 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+/**
+ * Classe principal do Motor de Busca
+ */
 public class MotorBusca {
 
 	private JFrame frame, frameIndexacao, frameBusca;
@@ -80,6 +83,26 @@ public class MotorBusca {
 		frameIndexacao.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frameIndexacao.getContentPane().setLayout(null);
 		
+		JCheckBox ativaBL = new JCheckBox("Ativa");
+		ativaBL.setSelected(true);
+		ativaBL.setBounds(220, 10, 70, 22);
+		frame.getContentPane().add(ativaBL);
+		
+		Button btnBlack = new Button("Arquivo Black List");
+		btnBlack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				IOArquivos selecionar = new IOArquivos();
+				Arquivo novo = selecionar.addArquivo();
+				if(novo != null) {
+					blackList = new Trie();
+					Importar.importar(blackList, novo);
+					salvar(t, blackList, repositorio);
+				}
+			}
+		});
+		btnBlack.setBounds(90, 10, 120, 22);
+		frame.getContentPane().add(btnBlack);
+		
 		textField = new JTextField();
 		textField.setBounds(73, 122, 259, 29);
 		frame.getContentPane().add(textField);
@@ -115,11 +138,13 @@ public class MotorBusca {
 					
 					palavrasDigitadas = busca.split(" ");
 					
-					for(int i = 0; i < palavrasDigitadas.length; i++) {
-						if(blackList.search(palavrasDigitadas[i], false) != null) {
-							JOptionPane.showMessageDialog(btnBusca, "Pesquisa proibida.", "ATENÇÃO", 0);
-							frameBusca.setVisible(false);
-							return;
+					if(ativaBL.isSelected()) {
+						for(int i = 0; i < palavrasDigitadas.length; i++) {
+							if(blackList.search(palavrasDigitadas[i], false) != null) {
+								JOptionPane.showMessageDialog(btnBusca, "Pesquisa com palavra proibida.", "ATENÇÃO", 0);
+								frameBusca.setVisible(false);
+								return;
+							}
 						}
 					}
 					
@@ -263,32 +288,14 @@ public class MotorBusca {
 		lblMOT.setBounds(106, 41, 236, 29);
 		frame.getContentPane().add(lblMOT);
 		
-		Button btnBlack = new Button("Black List");
-		btnBlack.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				IOArquivos selecionar = new IOArquivos();
-				Arquivo novo = selecionar.addArquivo();
-				if(novo != null) {
-					blackList = new Trie();
-					Importar.importar(blackList, novo);
-					salvar(t, blackList, repositorio);
-				}
-			}
-		});
-		btnBlack.setBounds(90, 10, 70, 22);
-		frame.getContentPane().add(btnBlack);
-		
 		Button button = new Button("Indexação");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				frameIndexacao.setVisible(true);
 				
 				List listArquivos = new List();
-				HashSet<Arquivo> arquivos = repositorio.listaArquivos();
-				for(Arquivo arquivo : arquivos) {
-					listArquivos.add(arquivo.getNome());
-				}
-
+				atualizaLista(listArquivos);
+				
 				listArquivos.setBounds(37, 41, 233, 272);
 				frameIndexacao.getContentPane().add(listArquivos);
 				
@@ -303,7 +310,7 @@ public class MotorBusca {
 							if(repositorio.addArquivo(novo))
 							{
 								Importar.importar(t, novo);
-								listArquivos.add(novo.getNome());
+								atualizaLista(listArquivos);
 								salvar(t, blackList, repositorio);
 							}
 						}
@@ -332,13 +339,17 @@ public class MotorBusca {
 				btnAtualizar.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						t = new Trie();
+						listArquivos.removeAll();
 						indice.clear();
-						indice = new HashMap<>();
-						indice.putAll(t.getIndice());
-						for (String palavra: indice.keySet()){
-				            System.out.println(palavra);
-				            System.out.println("  " + indice.get(palavra));
+						
+						for(Arquivo arquivo : repositorio.listaArquivos()) {
+							Importar.importar(t, arquivo);
 						}
+
+						indice.putAll(t.getIndice());
+						atualizaLista(listArquivos);
+						salvar(t, blackList, repositorio);
 					}
 				});
 				frameIndexacao.getContentPane().add(btnAtualizar);
@@ -459,5 +470,17 @@ public class MotorBusca {
 			System.out.println("Problemas ao recarregar os dados!");
 		}
 	   return;
+   }
+   
+   public void atualizaLista(List lista) {
+	   ArrayList<String> ordenados = new ArrayList<String>();
+		for(Arquivo arquivo : repositorio.listaArquivos()) {
+			ordenados.add(arquivo.getNome() + " - " + arquivo.getQtdePalavras());
+		}
+		java.util.Collections.sort(ordenados);
+		lista.removeAll();
+		for(String arquivo: ordenados) {
+			lista.add(arquivo);
+		}
    }
 }
