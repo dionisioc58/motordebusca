@@ -1,5 +1,4 @@
 import java.awt.Button;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.List;
 import java.awt.event.ActionEvent;
@@ -33,7 +32,10 @@ import javax.swing.border.TitledBorder;
 public class MotorBusca {
 
 	/** The frame busca. */
-	private JFrame frame, frameIndexacao, frameBusca;
+	public JFrame frame;
+	
+	/** Additional frames */
+	private JFrame frameIndexacao, frameBusca;
 	
 	/** The text field. */
 	private JTextField textField;
@@ -49,24 +51,6 @@ public class MotorBusca {
 	
 	/** The black list. */
 	private Trie blackList;
-
-	/**
-	 * Launch the application.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MotorBusca window = new MotorBusca();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
